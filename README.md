@@ -22,6 +22,11 @@
 
 ### 🎨 Premium User Experience
 *   **Dynamic Design**: A state-of-the-art interface featuring glassmorphism, smooth animations, and a responsive layout.
+
+<img width="1010" height="570" alt="Screenshot 2026-04-29 232500" src="https://github.com/user-attachments/assets/3b088a18-0343-4b99-a2cd-957aa3f1e3c7" />
+
+
+    
 *   **Dark Mode Support**: Fully integrated dark and light modes for comfortable reading in any environment.
 
 ---
