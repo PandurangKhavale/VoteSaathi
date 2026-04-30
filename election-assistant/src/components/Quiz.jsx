@@ -67,7 +67,7 @@ export default function Quiz() {
   if (finished) {
     const badge = getBadge(score, total);
     return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center animate-slide-up">
+      <main className="max-w-2xl mx-auto px-4 py-16 text-center animate-slide-up">
         <span className="text-7xl block mb-4">{badge.emoji}</span>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Quiz Complete!</h1>
         <p className="text-5xl font-extrabold text-civic-blue my-4">
@@ -82,12 +82,12 @@ export default function Quiz() {
             📋 Share Score
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 animate-slide-up">
+    <main className="max-w-2xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Election Knowledge Quiz</h1>
 
       {/* Progress bar */}
@@ -141,6 +141,6 @@ export default function Quiz() {
           </button>
         )}
       </div>
-    </div>
+    </main>
   );
 }

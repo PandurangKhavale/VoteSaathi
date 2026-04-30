@@ -36,7 +36,7 @@ export default function VoterRegistration() {
   const current = registrationSteps[step];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
+    <main className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Get registered in three steps</h1>
       <p className="text-gray-500 mb-8">Everything you need, from eligibility to submission, in one place.</p>
 
@@ -168,6 +168,6 @@ export default function VoterRegistration() {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

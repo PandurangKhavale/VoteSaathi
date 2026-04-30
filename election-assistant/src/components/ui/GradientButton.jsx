@@ -10,6 +10,8 @@ export default function GradientButton({
   disabled = false,
   icon,
   iconPosition = 'right',
+  ariaLabel,
+  ariaDescription,
 }) {
   const variants = {
     blue: 'from-civic-blue-electric to-civic-blue shadow-civic-blue/40 hover:shadow-civic-blue/50',
@@ -33,6 +35,7 @@ export default function GradientButton({
     active:translate-y-0 active:scale-[0.98]
     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
     inline-flex items-center justify-center gap-2
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-civic-gold
     ${variants[variant]}
     ${sizes[size]}
     ${className}
@@ -44,18 +47,24 @@ export default function GradientButton({
       className={baseClasses}
       onClick={onClick}
       disabled={disabled}
+      aria-label={ariaLabel}
+      aria-description={ariaDescription}
+      aria-disabled={disabled}
     >
       {/* Shine effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+      <div 
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" 
+        aria-hidden="true"
+      />
 
       {/* Content */}
       <span className="relative z-10 flex items-center gap-2">
         {icon && iconPosition === 'left' && (
-          <span className="w-5 h-5">{icon}</span>
+          <span className="w-5 h-5" aria-hidden="true">{icon}</span>
         )}
         {children}
         {icon && iconPosition === 'right' && (
-          <span className="w-5 h-5 group-hover:translate-x-1 transition-transform">{icon}</span>
+          <span className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true">{icon}</span>
         )}
       </span>
     </button>
@@ -72,4 +81,6 @@ GradientButton.propTypes = {
   disabled: PropTypes.bool,
   icon: PropTypes.node,
   iconPosition: PropTypes.oneOf(['left', 'right']),
+  ariaLabel: PropTypes.string,
+  ariaDescription: PropTypes.string,
 };

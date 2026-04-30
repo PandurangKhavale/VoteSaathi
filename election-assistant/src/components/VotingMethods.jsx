@@ -29,7 +29,7 @@ export default function VotingMethods() {
   const resetMiniQuiz = () => { setQuizStep(-1); setAnswers([]); setResult(null); };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 animate-slide-up">
+    <main className="max-w-5xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Voting Methods Explained</h1>
       <p className="text-gray-500 mb-8">Understand your options and choose the method that works best for you.</p>
 
@@ -79,6 +79,6 @@ export default function VotingMethods() {
         {quizStep >= 0 && (<div className="animate-fade-in"><p className="font-medium mb-3">{miniQuiz[quizStep].q}</p><div className="flex flex-col gap-2">{miniQuiz[quizStep].options.map((o, i) => <button key={i} onClick={() => answer(i)} className="text-left px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm">{o}</button>)}</div></div>)}
         {result && (<div className="animate-fade-in"><p className="text-lg font-semibold mb-1">We recommend: {votingMethods.find((m) => m.id === result)?.name}</p><p className="text-blue-200 text-sm mb-4">Scroll up to see it highlighted with a gold border.</p><button onClick={resetMiniQuiz} className="px-5 py-2 rounded-full bg-white/20 hover:bg-white/30 text-sm font-medium transition-colors">Retake Quiz</button></div>)}
       </div>
-    </div>
+    </main>
   );
 }

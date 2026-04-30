@@ -28,6 +28,8 @@ export default function ParticleField({
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return; // Skip animation in test environments without canvas support
+
     let animationFrameId;
 
     const resize = () => {

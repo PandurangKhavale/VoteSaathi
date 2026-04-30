@@ -233,7 +233,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`min-h-screen transition-theme relative overflow-x-hidden ${isDark ? 'bg-bg-primary' : 'bg-bg-primary'}`}>
+    <main className={`min-h-screen transition-theme relative overflow-x-hidden ${isDark ? 'bg-bg-primary' : 'bg-bg-primary'}`}>
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <ParticleField count={isDark ? 30 : 15} opacity={{ min: 0.1, max: 0.4 }} />
@@ -610,6 +610,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }

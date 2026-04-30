@@ -23,9 +23,17 @@ export default function ChatMessage({ message, theme }) {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`flex ${isBot ? "justify-start" : "justify-end"} mb-3 animate-fade-in`}>
+    <div 
+      className={`flex ${isBot ? "justify-start" : "justify-end"} mb-3 animate-fade-in`}
+      role="article"
+      aria-label={`${isBot ? 'VoteSaathi' : 'Your'} message: ${message.text.substring(0, 50)}...`}
+    >
       {isBot && (
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-civic-blue to-civic-purple flex items-center justify-center text-white text-xs font-bold shrink-0 mr-2 mt-1 shadow-md">
+        <div 
+          className="w-7 h-7 rounded-full bg-gradient-to-br from-civic-blue to-civic-purple flex items-center justify-center text-white text-xs font-bold shrink-0 mr-2 mt-1 shadow-md"
+          aria-label="VoteSaathi bot avatar"
+          title="VoteSaathi Assistant"
+        >
           VS
         </div>
       )}
@@ -37,6 +45,9 @@ export default function ChatMessage({ message, theme }) {
               : 'bg-white text-gray-800 border-gray-100 rounded-tl-sm'
             : 'bg-gradient-to-br from-civic-blue to-civic-purple text-white rounded-tr-sm border-transparent'
         }`}
+        role="region"
+        aria-live="polite"
+        aria-label={`${isBot ? 'Assistant' : 'User'} message`}
       >
         <div className="space-y-1 leading-relaxed">
           {renderMarkdown(message.text)}
