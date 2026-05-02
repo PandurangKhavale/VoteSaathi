@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { registrationSteps } from '../data/electionData';
+import { trackFormEvent, trackEngagement, trackFeatureUsage } from '../utils/analyticsService';
 
 const eligibilityItems = [
   { id: 'citizen', label: 'I am a U.S. citizen' },
@@ -36,7 +37,7 @@ export default function VoterRegistration() {
   const current = registrationSteps[step];
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
+    <section className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Get registered in three steps</h1>
       <p className="text-gray-500 mb-8">Everything you need, from eligibility to submission, in one place.</p>
 
@@ -168,6 +169,6 @@ export default function VoterRegistration() {
           ))}
         </div>
       </div>
-    </main>
+    </section>
   );
 }

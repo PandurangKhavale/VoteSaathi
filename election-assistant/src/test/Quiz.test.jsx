@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Quiz from '../components/Quiz';
 import { AppProvider } from '../context/AppContext';
@@ -20,30 +20,17 @@ function renderWithProviders(component) {
 describe('Quiz Component', () => {
   it('renders the quiz container', () => {
     renderWithProviders(<Quiz />);
-    const quiz = screen.getByRole('main');
-    expect(quiz).toBeInTheDocument();
-  });
-
-  it('should have proper accessibility semantics', () => {
-    renderWithProviders(<Quiz />);
-    const main = screen.getByRole('main');
-    expect(main).toHaveAttribute('class');
+    expect(screen.getByText(/Election Knowledge Quiz/i)).toBeInTheDocument();
   });
 
   it('displays quiz content without errors', () => {
     renderWithProviders(<Quiz />);
-    expect(screen.getByRole('main')).toBeInTheDocument();
-  });
-
-  it('allows navigation within quiz', async () => {
-    renderWithProviders(<Quiz />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
+    expect(screen.getByText(/Question/i)).toBeInTheDocument();
   });
 
   it('has proper heading hierarchy', () => {
     renderWithProviders(<Quiz />);
-    const headings = screen.queryAllByRole('heading');
-    expect(headings.length).toBeGreaterThanOrEqual(0);
+    const h1 = screen.getByRole('heading', { level: 1 });
+    expect(h1).toHaveTextContent(/Quiz/i);
   });
 });

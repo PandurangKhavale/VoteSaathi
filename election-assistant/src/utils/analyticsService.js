@@ -74,6 +74,70 @@ export const trackVotingMethodSelection = (method) => {
   trackEvent('Voting', 'MethodSelected', method);
 };
 
+/**
+ * Track chat interactions
+ * @param {string} messageType - Type of chat message
+ * @param {string} topic - Topic of conversation
+ */
+export const trackChatInteraction = (messageType, topic) => {
+  trackEvent('Chat', messageType, topic);
+};
+
+/**
+ * Track user engagement metrics
+ * @param {string} action - Engagement action
+ * @param {string} label - Additional context
+ */
+export const trackEngagement = (action, label) => {
+  trackEvent('Engagement', action, label);
+};
+
+/**
+ * Track user retention
+ * @param {string} eventType - Type of retention event
+ * @param {number} value - Value associated with event
+ */
+export const trackRetention = (eventType, value) => {
+  trackEvent('Retention', eventType, 'user_journey', value);
+};
+
+/**
+ * Track conversion events
+ * @param {string} conversionType - Type of conversion
+ * @param {string} label - Conversion details
+ */
+export const trackConversion = (conversionType, label) => {
+  trackEvent('Conversion', conversionType, label);
+};
+
+/**
+ * Set user properties for advanced analytics
+ * @param {Object} properties - User properties object
+ */
+export const setUserProperties = (properties) => {
+  if (GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+    ReactGA.set(properties);
+  }
+};
+
+/**
+ * Track scroll depth
+ * @param {number} depth - Scroll depth percentage
+ */
+export const trackScrollDepth = (depth) => {
+  trackEvent('UserJourney', 'ScrollDepth', `${depth}%`, depth);
+};
+
+/**
+ * Track custom parameters
+ * @param {Object} params - Parameters object
+ */
+export const trackCustomParams = (params) => {
+  if (GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+    ReactGA.send(params);
+  }
+};
+
 export default {
   initializeGA,
   trackPageView,
@@ -82,4 +146,11 @@ export default {
   trackFeatureUsage,
   trackQuizCompletion,
   trackVotingMethodSelection,
+  trackChatInteraction,
+  trackEngagement,
+  trackRetention,
+  trackConversion,
+  setUserProperties,
+  trackCustomParams,
+  trackScrollDepth,
 };

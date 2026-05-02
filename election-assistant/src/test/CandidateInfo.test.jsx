@@ -20,19 +20,17 @@ function renderWithProviders(component) {
 describe('CandidateInfo Component', () => {
   it('renders candidate information page', () => {
     renderWithProviders(<CandidateInfo />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
+    expect(screen.getByText(/Candidate Information Guide/i)).toBeInTheDocument();
   });
 
   it('displays candidate content', () => {
     renderWithProviders(<CandidateInfo />);
-    expect(screen.getByRole('main')).toBeInTheDocument();
+    expect(screen.getByText(/Evaluate candidates/i)).toBeInTheDocument();
   });
 
   it('has semantic structure', () => {
     renderWithProviders(<CandidateInfo />);
-    const main = screen.getByRole('main');
-    expect(main).toHaveAttribute('class');
+    expect(screen.getByText(/Candidate Information Guide/i)).toBeInTheDocument();
   });
 
   it('contains headings for information hierarchy', () => {
@@ -49,7 +47,6 @@ describe('CandidateInfo Component', () => {
 
   it('has proper accessibility attributes', () => {
     renderWithProviders(<CandidateInfo />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
+    expect(screen.getByText(/Evaluate candidates/i)).toBeInTheDocument();
   });
 });

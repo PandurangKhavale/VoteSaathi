@@ -29,7 +29,7 @@ export default function CandidateInfo() {
   const pct = Math.round((done / total) * 100);
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
+    <section className="max-w-4xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Candidate Information Guide</h1>
       <p className="text-gray-500 mb-8">Evaluate candidates objectively using these research tools and checklists.</p>
 
@@ -134,6 +134,6 @@ export default function CandidateInfo() {
           </div>
         )}
       </div>
-    </main>
+    </section>
   );
 }

@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { questions } from '../data/quizQuestions';
 import { useAppContext } from '../context/AppContext';
+import { trackQuizCompletion, trackEngagement, trackFeatureUsage } from '../utils/analyticsService';
 
 function getBadge(score, total) {
   const pct = score / total;
@@ -18,6 +19,12 @@ export default function Quiz() {
   const [finished, setFinished] = useState(quizState.completed);
   const [score, setScore] = useState(quizState.score);
 
+  // Track quiz start
+  useEffect(() => {
+    trackFeatureUsage('QuizStarted');
+    trackEngagement('QuizActivity', 'Started');
+  }, []);
+
   const q = questions[idx];
   const total = questions.length;
   const progressPct = ((idx + (showFeedback ? 1 : 0)) / total) * 100;
@@ -31,6 +38,9 @@ export default function Quiz() {
       const newAnswers = [...answers, { questionId: q.id, selected: optIdx, correct }];
       setAnswers(newAnswers);
       if (correct) setScore((s) => s + 1);
+
+      // Track question answer
+      trackEngagement('QuizAnswer', correct ? 'Correct' : 'Incorrect');
     },
     [showFeedback, q, answers],
   );
@@ -41,6 +51,10 @@ export default function Quiz() {
       completeQuiz(finalScore, answers);
       setScore(finalScore);
       setFinished(true);
+
+      // Track quiz completion
+      trackQuizCompletion(finalScore, total);
+      trackEngagement('QuizCompleted', `${finalScore}/${total}`);
     } else {
       setIdx((i) => i + 1);
       setSelected(null);
@@ -56,18 +70,25 @@ export default function Quiz() {
     setAnswers([]);
     setFinished(false);
     setScore(0);
+
+    // Track quiz restart
+    trackEngagement('QuizRestarted', 'UserInitiated');
+    trackFeatureUsage('QuizStarted');
   };
 
   const handleShare = () => {
     const badge = getBadge(score, total);
     const text = `I scored ${score}/${total} on the Election Knowledge Quiz and earned the "${badge.label}" badge! 🗳️`;
     navigator.clipboard.writeText(text);
+
+    // Track score sharing
+    trackEngagement('QuizScoreShared', `${score}/${total}`);
   };
 
   if (finished) {
     const badge = getBadge(score, total);
     return (
-      <main className="max-w-2xl mx-auto px-4 py-16 text-center animate-slide-up">
+      <section className="max-w-2xl mx-auto px-4 py-16 text-center animate-slide-up">
         <span className="text-7xl block mb-4">{badge.emoji}</span>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Quiz Complete!</h1>
         <p className="text-5xl font-extrabold text-civic-blue my-4">
@@ -82,12 +103,12 @@ export default function Quiz() {
             📋 Share Score
           </button>
         </div>
-      </main>
+      </section>
     );
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-10 animate-slide-up">
+    <section className="max-w-2xl mx-auto px-4 py-10 animate-slide-up">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Election Knowledge Quiz</h1>
 
       {/* Progress bar */}
@@ -141,6 +162,6 @@ export default function Quiz() {
           </button>
         )}
       </div>
-    </main>
+    </section>
   );
 }

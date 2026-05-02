@@ -1,20 +1,26 @@
 import PropTypes from "prop-types";
+import DOMPurify from 'dompurify';
 
 function renderMarkdown(text) {
-  return text.split("\n").map((line, i) => {
+  // Sanitize the input text if it's dynamic
+  const sanitizedText = DOMPurify.sanitize(text);
+  
+  return sanitizedText.split("\n").map((line, i) => {
+    // Process bold text
     const processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    
     if (line.startsWith("- ")) {
       return (
-        <li key={i} className="ml-4 list-disc text-sm" dangerouslySetInnerHTML={{ __html: processed.slice(2) }} />
+        <li key={i} className="ml-4 list-disc text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processed.slice(2)) }} />
       );
     }
     if (/^\d+\.\s/.test(line)) {
       return (
-        <li key={i} className="ml-4 list-decimal text-sm" dangerouslySetInnerHTML={{ __html: processed.replace(/^\d+\.\s/, "") }} />
+        <li key={i} className="ml-4 list-decimal text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processed.replace(/^\d+\.\s/, "")) }} />
       );
     }
     if (line.trim() === "") return <br key={i} />;
-    return <p key={i} className="text-sm" dangerouslySetInnerHTML={{ __html: processed }} />;
+    return <p key={i} className="text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processed) }} />;
   });
 }
 

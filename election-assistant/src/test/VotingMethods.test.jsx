@@ -20,37 +20,17 @@ function renderWithProviders(component) {
 describe('VotingMethods Component', () => {
   it('renders voting methods page', () => {
     renderWithProviders(<VotingMethods />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
+    expect(screen.getByText(/Voting Methods/i)).toBeInTheDocument();
   });
 
   it('displays voting information', () => {
     renderWithProviders(<VotingMethods />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
+    expect(screen.getByText(/options/i)).toBeInTheDocument();
   });
 
   it('has proper heading structure', () => {
     renderWithProviders(<VotingMethods />);
     const headings = screen.queryAllByRole('heading');
-    expect(Array.isArray(headings)).toBe(true);
-  });
-
-  it('renders without errors', () => {
-    expect(() => {
-      renderWithProviders(<VotingMethods />);
-    }).not.toThrow();
-  });
-
-  it('has interactive content for users', () => {
-    renderWithProviders(<VotingMethods />);
-    const main = screen.getByRole('main');
-    expect(main).toBeInTheDocument();
-  });
-
-  it('is semantically correct', () => {
-    renderWithProviders(<VotingMethods />);
-    const main = screen.getByRole('main');
-    expect(main).toHaveAttribute('class');
+    expect(headings.length).toBeGreaterThan(0);
   });
 });

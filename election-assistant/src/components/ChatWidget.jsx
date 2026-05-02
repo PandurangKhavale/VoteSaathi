@@ -1,99 +1,36 @@
-import { useState, useRef, useEffect, useCallback } from "react";
 import { useTheme } from "../context/ThemeContext";
 import ChatMessage from "./ChatMessage";
-import { processMessage } from "../utils/chatEngine";
-import { getAIResponse, getStoredApiKey, storeApiKey } from "../utils/aiService";
-
-const WELCOME = {
-  id: 0, sender: "bot",
-  text: "Namaste! I am the **VoteSaathi Assistant**. I can help you with voter registration, voting methods, election dates, candidate research, and more.\n\nWhat would you like to know?",
-};
-const INITIAL_SUGGESTIONS = ["Voter Registration", "Voting Methods", "Election Timeline", "Candidate Research", "Take a Quiz"];
-const FALLBACK_SUGGESTIONS = ["Voter Registration", "Voting Methods", "Election Timeline", "Candidate Research", "Take a Quiz", "Find Resources"];
+import { useChat } from "../hooks/useChat";
+import { trackChatInteraction } from "../utils/analyticsService";
 
 export default function ChatWidget() {
   const { theme } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([WELCOME]);
-  const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState(INITIAL_SUGGESTIONS);
-  const [isTyping, setIsTyping] = useState(false);
-  const [quizState, setQuizState] = useState(null);
-  const [showSettings, setShowSettings] = useState(false);
-  const [apiKey, setApiKey] = useState(getStoredApiKey);
-  const [keyInput, setKeyInput] = useState("");
-  const endRef = useRef(null);
-  const inputRef = useRef(null);
+  const {
+    isOpen,
+    messages,
+    input,
+    suggestions,
+    isTyping,
+    quizState,
+    showSettings,
+    apiKey,
+    keyInput,
+    endRef,
+    inputRef,
+    setInput,
+    setKeyInput,
+    setIsOpen,
+    setShowSettings,
+    sendMessage,
+    toggleChat,
+    resetChat,
+    saveApiKey,
+    removeApiKey,
+  } = useChat();
 
-  const scrollToBottom = useCallback(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(scrollToBottom, [messages, isTyping, scrollToBottom]);
-  useEffect(() => { if (isOpen && !showSettings) inputRef.current?.focus(); }, [isOpen, showSettings]);
-
-  const addBotMessage = useCallback((text, sug) => {
-    setMessages((p) => [...p, { id: Date.now() + 1, sender: "bot", text }]);
-    setSuggestions(sug || []);
-    setIsTyping(false);
-  }, []);
-
-  const sendMessage = useCallback(async (text) => {
-    if (!text.trim()) return;
-    const userMsg = { id: Date.now(), sender: "user", text: text.trim() };
-    setMessages((p) => [...p, userMsg]);
-    setInput("");
-    setSuggestions([]);
-    setIsTyping(true);
-
-    const localResponse = processMessage(text, quizState);
-    if (localResponse) {
-      setTimeout(() => {
-        addBotMessage(localResponse.text, localResponse.suggestions);
-        if (localResponse.quiz !== undefined) setQuizState(localResponse.quiz);
-      }, 400 + Math.random() * 300);
-      return;
-    }
-
-    if (apiKey) {
-      try {
-        const allMessages = [...messages, userMsg];
-        const aiText = await getAIResponse(text, apiKey, allMessages);
-        if (aiText) {
-          addBotMessage(aiText, FALLBACK_SUGGESTIONS);
-          return;
-        }
-      } catch {
-        /* fall through */
-      }
-    }
-
-    setTimeout(() => {
-      addBotMessage(
-        "I am not sure about that. I can help with voter registration, voting methods, election dates, candidate research, and more.\n\n**Tip:** Add a Gemini API key in settings for AI-powered answers!",
-        FALLBACK_SUGGESTIONS
-      );
-    }, 500);
-  }, [quizState, apiKey, messages, addBotMessage]);
-
-  const handleSubmit = (e) => { e.preventDefault(); sendMessage(input); };
-
-  const saveKey = () => {
-    const trimmed = keyInput.trim();
-    storeApiKey(trimmed);
-    setApiKey(trimmed);
-    setShowSettings(false);
-    if (trimmed) {
-      setMessages((p) => [...p, { id: Date.now(), sender: "bot", text: "AI mode **activated**! I can now answer any election-related question using Google Gemini." }]);
-    }
-  };
-
-  const removeKey = () => {
-    storeApiKey("");
-    setApiKey("");
-    setKeyInput("");
-    setShowSettings(false);
-    setMessages((p) => [...p, { id: Date.now(), sender: "bot", text: "AI mode **deactivated**. I will use my built-in knowledge base." }]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(input);
   };
 
   const isDark = theme === 'dark';
@@ -104,7 +41,7 @@ export default function ChatWidget() {
       {!isOpen && (
         <button
           id="chat-widget-toggle"
-          onClick={() => setIsOpen(true)}
+          onClick={toggleChat}
           className={`fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group ${
             isDark
               ? 'bg-gradient-to-br from-civic-blue to-civic-purple text-white shadow-civic-blue/40'
@@ -128,7 +65,7 @@ export default function ChatWidget() {
             : 'bg-white border-gray-200 shadow-xl'
         }`}>
           {/* Header */}
-          <div className={`bg-gradient-to-r from-civic-blue to-blue-700 px-4 py-3 flex items-center gap-3 shrink-0`}>
+          <div className="bg-gradient-to-r from-civic-blue to-blue-700 px-4 py-3 flex items-center gap-3 shrink-0">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm shadow-inner">VS</div>
             <div className="flex-1 min-w-0">
               <h3 className="text-white font-semibold text-sm">VoteSaathi Assistant</h3>
@@ -144,12 +81,7 @@ export default function ChatWidget() {
               </p>
             </div>
             <button
-              onClick={() => {
-                setMessages([WELCOME]);
-                setSuggestions(INITIAL_SUGGESTIONS);
-                setQuizState(null);
-                setShowSettings(false);
-              }}
+              onClick={resetChat}
               className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
               aria-label="Main Menu / Restart"
               title="Main Menu"
@@ -202,7 +134,7 @@ export default function ChatWidget() {
                   }`}
                 />
                 <button
-                  onClick={saveKey}
+                  onClick={saveApiKey}
                   className="px-3 py-1.5 text-xs bg-civic-blue text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                 >
                   Save
@@ -210,7 +142,7 @@ export default function ChatWidget() {
               </div>
               {apiKey && (
                 <button
-                  onClick={removeKey}
+                  onClick={removeApiKey}
                   className="mt-2 text-xs text-red-400 hover:text-red-300 transition-colors"
                 >
                   Remove API key
@@ -251,7 +183,10 @@ export default function ChatWidget() {
               {suggestions.map((s) => (
                 <button
                   key={s}
-                  onClick={() => sendMessage(s)}
+                  onClick={() => {
+                    sendMessage(s);
+                    trackChatInteraction('QuickReply', s);
+                  }}
                   className={`text-xs px-3 py-1.5 rounded-full border font-medium whitespace-nowrap transition-all duration-200 hover:scale-105 ${
                     isDark
                       ? 'border-civic-blue/30 text-civic-blue-light hover:bg-civic-blue hover:text-white'

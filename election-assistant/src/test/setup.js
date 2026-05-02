@@ -32,3 +32,33 @@ global.IntersectionObserver = class IntersectionObserver {
   }
   unobserve() {}
 };
+
+// Mock HTMLCanvasElement.getContext
+HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
+  fillRect: vi.fn(),
+  clearRect: vi.fn(),
+  getImageData: vi.fn(),
+  putImageData: vi.fn(),
+  createImageData: vi.fn(),
+  setTransform: vi.fn(),
+  drawImage: vi.fn(),
+  save: vi.fn(),
+  fillText: vi.fn(),
+  restore: vi.fn(),
+  beginPath: vi.fn(),
+  moveTo: vi.fn(),
+  lineTo: vi.fn(),
+  clip: vi.fn(),
+  quadraticCurveTo: vi.fn(),
+  arc: vi.fn(),
+  fill: vi.fn(),
+  stroke: vi.fn(),
+  createPattern: vi.fn(),
+  createLinearGradient: vi.fn(),
+  createRadialGradient: vi.fn(),
+  strokeRect: vi.fn(),
+  measureText: vi.fn(() => ({ width: 0 })),
+  transform: vi.fn(),
+  rect: vi.fn(),
+  trigger: vi.fn(),
+});
